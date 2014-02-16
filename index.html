@@ -21,10 +21,11 @@
   shape-rendering: crispEdges;
 }
 
-.flappy-line {
+.flappy-line, .previous-flaps {
   stroke: black;
   stroke-width: 1pt;
   fill: none;
+}
 
 </style>
 <body>
@@ -33,7 +34,7 @@
 <script>
 
 var margin = {top: 20, right: 20, bottom: 30, left: 40},
-    width = 960 - margin.left - margin.right,
+    width = 750 - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
 
 var svg = d3.select("body").append("svg")
@@ -49,8 +50,8 @@ var fps = 30;
 var wait = 1000/fps;
 var stepWidth = 0.02;
 var startHeight = 0.5;
-var timeLeft = 0.2;
-var timeRight = 0.8;
+var timeLeft = 0.6;
+var timeRight = 0.4;
 
 // Axis prep
 
@@ -108,6 +109,34 @@ function step() {
   var lastFlap = flaps[flaps.length-1];
   var lastFlapFn = flapFn(lastFlap.t, lastFlap.h);
 
+  // make array of flaplinedata
+  if (flaps.length > 1) {
+    var succedingFlaps = d3.zip(flaps.slice(0, flaps.length - 1), flaps.slice(1, flaps.length));
+    var previousFlapsData = succedingFlaps.map(function(flaps) {
+      var flapLineData = []
+      flapLineData.push({x: flaps[0].t, y: flaps[0].h});
+      if (flaps[0].t + flapWidth < flaps[1].t) {
+        flapLineData.push({x: flaps[0].t + flapWidth, y: flaps[0].h + flapHeight});
+      }
+      flapLineData.push({x: flaps[1].t, y: flaps[1].h});
+      return flapLineData;
+    });
+
+    var preFlaps = svg.selectAll('path.previous-flaps')
+      .data(previousFlapsData)
+
+    preFlaps
+      .enter()
+      .append('path')
+      .attr('class', 'previous-flaps')
+
+    preFlaps
+      .attr('d', d3.svg.line().interpolate('step')
+          .x(function(d) { return x(d.x); })
+          .y(function(d) { return y(d.y); })
+          );
+  }
+
   var tailData = [lastFlap.t];
   if (lastFlap.t + flapWidth > time) {
     tailData.push(time);
@@ -115,7 +144,7 @@ function step() {
     tailData.push(lastFlap.t + flapWidth);
     tailData.push(time);
   }
-  var tailGen = d3.svg.line().interpolate('monotone')
+  var tailGen = d3.svg.line().interpolate('step')
     .x(function(d) { return x(d); })
     .y(function(d) { return y(lastFlapFn(d)); });
   tail.datum(tailData).attr("d", tailGen);
