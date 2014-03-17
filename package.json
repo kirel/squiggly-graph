@@ -9,16 +9,14 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "gulp-util": "~2.2.14",
-    "gulp": "~3.5.2",
-    "gulp-browserify": "~0.4.5",
-    "coffeeify": "~0.6.0",
-    "debowerify": "~0.6.0",
-    "gulp-rename": "~1.1.0",
-    "gulp-livereload": "~1.1.1"
+    "broccoli": "^0.4.1",
+    "broccoli-sass": "^0.1.2",
+    "broccoli-coffee": "^0.1.0",
+    "broccoli-es6-concatenator": "^0.1.2",
+    "broccoli-jade": "^0.1.0",
+    "broccoli-browserify": "0.0.1",
+    "broccoli-traceur": "^0.1.0"
   },
   "dependencies": {
-    "miso.dataset": "~0.4.1",
-    "jquery": "~2.1.0"
   }
 }

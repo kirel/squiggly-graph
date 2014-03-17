@@ -1,5 +1,5 @@
-d3 = require('d3')
-$ = require('jquery')
+`import d3 from "d3/d3"`
+`import $ from "jquery/dist/jquery"`
 
 # globals
 
@@ -67,7 +67,7 @@ step = ->
     y lastFlapFn(t)
 
   setTimeout step, wait
-  return
+
 flap = ->
   lastFlap = flaps[flaps.length - 1]
   lastFlapFn = flapFn(lastFlap.t, lastFlap.h)
@@ -76,7 +76,6 @@ flap = ->
     t: time
     h: currentHeight
 
-  return
 margin =
   top: 20
   right: 20
@@ -108,6 +107,7 @@ y = d3.scale.linear().range([
   0
   1
 ])
+
 xAxis = d3.svg.axis().scale(x).orient("bottom")
 yAxis = d3.svg.axis().scale(y).orient("left")
 xAxisGroup = svg.append("g").attr("class", "x axis").attr("transform", "translate(0," + height + ")").call(xAxis)
@@ -118,14 +118,16 @@ flaps = [
   t: 0
   h: startHeight
 ]
+
 tail = svg.append("path").attr("class", "flappy-line")
 point = svg.append("circle").attr("r", "10").attr("cx", ->
   x time
+
 ).attr("cy", ->
   y startHeight
 )
+
 $(document).on "keydown", ->
   $(document).off "keydown"
   $(document).on "keydown", flap
   step()
-  return
